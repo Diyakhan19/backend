@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  profileImage String?
+  role         String[]
+  createdAt    DateTime      @default(now())
+  updateAt     DateTime      @default(now()) @updatedAt
+  posts        Post[]
+  hotels       Hotel[]
+  transports   Transport[]
+  destination  Destination[]
+  favorites    Favorite[]
+  sendrChat    Chat[]
+  receiverChat Chat[]        @relation(name: "reciever")
+  messages     Message[]
+}
+
+model Favorite {
+  favId         Int         @id @default(autoincrement())
+  user          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId        Int
+  hotel         Hotel?      @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotelId       Int?
+  post          Post?       @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  postId        Int?
+  destination   Destination @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
+  destinationId Int
+}
+
+model Hotel {
+  hotelId   Int        @id @default(autoincrement())
+  name      String
+  address   String
+  images    String?
+  lat       Float?
+  lng       Float?
+  user      User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId    Int
+  favorites Favorite[]
+  rooms     Room[]
+}
+
+model Transport {
+  transportId Int     @id @default(autoincrement())
+  title       String
+  type        String
+  address     String
+  images      String?
+  user        User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      Int
+}
+
+model Room {
+  roomId  Int    @id @default(autoincrement())
+  title   String
+  images  Json?
+  price   Float
+  hotel   Hotel  @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotelId Int
+}
+
+model Post {
+  postId      Int        @id @default(autoincrement())
+  title       String
+  description String
+  address     String
+  price       Float
+  images      Json?
+  user        User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      Int
+  favorites   Favorite[]
+}
+
+model Destination {
+  destinationId Int        @id @default(autoincrement())
+  name          String
+  location      String
+  lat           Float?
+  lng           Float?
+  user          User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId        Int
+  favorites     Favorite[]
+}
+
+model Chat {
+  chatId     Int       @id @default(autoincrement())
+  sender     User      @relation(fields: [senderId], references: [userId], onDelete: Cascade)
+  senderId   Int
+  receiver   User      @relation(name: "reciever", fields: [receiverId], references: [userId], onDelete: Cascade)
+  receiverId Int
+  messages   Message[]
+}
+
+model Message {
+  messageId    Int      @id @default(autoincrement())
+  conversation Chat     @relation(fields: [chatId], references: [chatId], onDelete: Cascade)
+  chatId       Int
+  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId       Int
+  text         String?
+  attachments  Json?
+  createdAt    DateTime @default(now())
+}
