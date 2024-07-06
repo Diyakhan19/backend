@@ -20,3 +20,8 @@ export const signup = async (req, res, next) => {
     });
   }
 };
+
+/// NEW CODE
+export const login = () => {
+  // Login logic
+};
