@@ -1,4 +1,4 @@
-import { sendResponse } from "../utils/response.js";
+import { sendResponse } from "../../utils/response.js";
 import service from "./auth.service.js";
 import { encryptPassword, comparePassword, getToken } from "./auth.utils.js";
 
@@ -19,7 +19,7 @@ export const signup = async (req, res, next) => {
       name: name,
       email: email.trim().toLowerCase(),
       password: hashedPass,
-      role: role,
+      role: [role],
     };
 
     const user = await service.createUser(data);
@@ -72,7 +72,7 @@ export const login = async (req, res, next) => {
 
     return sendResponse(res, "Login successful", data);
   } catch (err) {
-    console.error("Login error:", err);
+    console.log("Login error:", err);
     next({ status: 500, msg: err.message });
   }
 };
