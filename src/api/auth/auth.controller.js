@@ -20,6 +20,7 @@ export const signup = async (req, res, next) => {
       email: email.trim().toLowerCase(),
       password: hashedPass,
       role: [role],
+      profileImage: req.file ? req.file.path : null,
     };
 
     const user = await service.createUser(data);
