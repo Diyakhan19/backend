@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";
 
 const app = express();
 
@@ -11,15 +12,38 @@ const __dirname = path.dirname(__filename);
 const staticFolderPath = path.join(__dirname, "uploads");
 app.use("/uploads", express.static(staticFolderPath));
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+// ==== CORS Policy ==== //
+var whitelist = ["http://localhost:3000"];
+
+export var corsOptions = {
+  origin: function (origin, callback) {
+    if (origin === undefined) return callback(null, true);
+
+    if (whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+// Routes
+app.get("/api", (req, res) => {
+  return res.send("Server is running...!");
+});
+
 import authRouter from "./src/api/auth/auth.router.js";
 import userRouter from "./src/api/user/user.router.js";
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-
-app.get("/api", (req, res) => {
-  return res.send("Server is running...!");
-});
 
 // Error handler
 app.use((err, req, res, next) => {
