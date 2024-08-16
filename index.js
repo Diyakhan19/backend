@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
+import auth from "./src/middleware/auth.middleware.js";
 
 const app = express();
 
@@ -38,12 +39,16 @@ app.use(cors(corsOptions));
 app.get("/api", (req, res) => {
   return res.send("Server is running...!");
 });
-
+app.use("*", auth)
 import authRouter from "./src/api/auth/auth.router.js";
 import userRouter from "./src/api/user/user.router.js";
+import adminRouter from "./src/api/admin/admin.router.js";
+
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
+
 
 // Error handler
 app.use((err, req, res, next) => {

@@ -90,10 +90,11 @@ model Post {
 
 model Destination {
   destinationId Int        @id @default(autoincrement())
-  name          String
-  location      String
-  lat           Float?
-  lng           Float?
+  title       String
+  location    String
+  district    String
+  description String
+  images      String[]
   user          User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
   favorites     Favorite[]

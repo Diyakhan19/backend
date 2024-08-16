@@ -1,9 +1,9 @@
 import multer, { diskStorage } from "multer";
 
-const profileImg = multer({
+const destinationImgs = multer({
   storage: diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "uploads/avatars");
+      cb(null, "uploads/destinations");
     },
     filename: (req, file, cb) => {
       let fileName = new Date().getMilliseconds() + "-" + file.originalname;
@@ -21,7 +21,8 @@ const profileImg = multer({
 });
 
 const upload = {
-  profileImg,
+  destinationImgs,
 };
+
 
 export default upload;

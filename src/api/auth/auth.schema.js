@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const sigupSchema = [
+export const signupSchema = [
   body("email", "Email is required").notEmpty().isString().isEmail(),
   body("name", "Name is required").notEmpty().isString(),
   body("password", "Strong password is required").isStrongPassword({
