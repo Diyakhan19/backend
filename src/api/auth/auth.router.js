@@ -1,15 +1,15 @@
 import express from "express";
 import { login, signup } from "./auth.controller.js";
 const router = express.Router();
-import { validate } from "../../utils/shema.validation.js";
-import { sigupSchema, loginSchema } from "./auth.schema.js";
-import upload from "../../middleware/upload.middleware.js";
+import { validate } from "../../utils/schema.validation.js";
+import { signupSchema, loginSchema } from "./auth.schema.js";
+
 
 // Signup route
 router.post(
   "/signup",
-  upload.profileImg.single("image"),
-  validate(sigupSchema),
+
+  validate(signupSchema),
   signup
 );
 
