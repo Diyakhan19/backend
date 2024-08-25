@@ -1,10 +1,16 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config({ silent: process.env.NODE_ENV === "production" });
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = (req, res, next) => {
   // Public Routes
-  const excludedPaths = [];
+  const excludedPaths = [
+    "/api/auth/login",
+    "/api/auth/signup",
+    "/api/auth/user",
+  ];
 
   console.log(req.params["0"]);
 

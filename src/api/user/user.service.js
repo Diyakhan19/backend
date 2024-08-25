@@ -16,6 +16,9 @@ const getUsers = () => {
       email: true,
       role: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 };
 

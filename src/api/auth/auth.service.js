@@ -6,6 +6,13 @@ const getUserByEmail = (email) => {
     where: {
       email: email.trim().toLowerCase(),
     },
+    include: {
+      favorites: {
+        select: {
+          postId: true,
+        },
+      },
+    },
   });
 };
 
@@ -16,9 +23,28 @@ const createUser = (data) => {
   });
 };
 
+// Get user by id
+const getUserById = (userId) => {
+  return prisma.user.findUnique({
+    where: {
+      userId: +userId,
+    },
+    include: {
+      posts: true,
+      favorites: {
+        include: {
+          post: true,
+        },
+      },
+      hotels: true,
+    },
+  });
+};
+
 const service = {
   getUserByEmail,
   createUser,
+  getUserById,
 };
 
 export default service;

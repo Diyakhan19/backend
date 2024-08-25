@@ -6,10 +6,10 @@ export const signupSchema = [
   body("password", "Strong password is required").isStrongPassword({
     minLength: 6,
   }),
-  body("role", "User must be one of these: User, admin, seller").isIn([
+  body("role", "User must be one of these: User, admin, vendor").isIn([
     "user",
     "admin",
-    "seller",
+    "vendor",
   ]),
 ];
 

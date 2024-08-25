@@ -1,15 +1,59 @@
 import prisma from "../../../config/db.js";
 
- const createDestination = async (data) => {
+const createDestination = (data) => {
   return prisma.destination.create({ data });
 };
 
- const getDestinations = async () => {
-  return prisma.destination.findMany();
+const getDestinations = (searchSchema) => {
+  return prisma.destination.findMany({
+    where: {
+      OR: searchSchema,
+    },
+  });
 };
 
- const deleteDestination = async (id) => {
+const deleteDestination = (id) => {
   return prisma.destination.delete({ where: { id: Number(id) } });
 };
- const service = {createDestination, getDestinations, deleteDestination};
- export default service;
+
+const getUsers = (searchSchema) => {
+  return prisma.user.findMany({
+    where: {
+      OR: searchSchema,
+    },
+    select: {
+      userId: true,
+      name: true,
+      email: true,
+      roles: true,
+      image: true,
+      status: true,
+      _count: {
+        select: {
+          posts: true,
+          hotels: true,
+          transports: true,
+        },
+      },
+    },
+  });
+};
+
+const updateUser = (userId, data) => {
+  return prisma.user.update({
+    where: {
+      userId: +userId,
+    },
+    data: data,
+  });
+};
+
+const service = {
+  createDestination,
+  getDestinations,
+  deleteDestination,
+  getUsers,
+  updateUser,
+};
+
+export default service;

@@ -19,8 +19,8 @@ export const signup = async (req, res, next) => {
       name: name,
       email: email.trim().toLowerCase(),
       password: hashedPass,
-      role: [role],
-      profileImage: req.file ? req.file.path : null,
+      roles: [role],
+      image: req.file ? req.file.path : null,
     };
 
     const user = await service.createUser(data);
@@ -72,6 +72,22 @@ export const login = async (req, res, next) => {
     };
 
     return sendResponse(res, "Login successful", data);
+  } catch (err) {
+    console.log("Login error:", err);
+    next({ status: 500, msg: err.message });
+  }
+};
+
+// Get user profile
+export const getUser = async (req, res, next) => {
+  try {
+    const { userId } = req.query;
+
+    const user = await service.getUserById(userId);
+
+    user.password = undefined;
+
+    return sendResponse(res, "Get user successful", user);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });

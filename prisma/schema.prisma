@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -18,8 +19,10 @@ model User {
   name         String
   email        String        @unique
   password     String
-  profileImage String?
-  role         String[]
+  status       String        @default("pending")
+  image        String?
+  about        String?
+  roles        String[]
   createdAt    DateTime      @default(now())
   updateAt     DateTime      @default(now()) @updatedAt
   posts        Post[]
@@ -40,8 +43,8 @@ model Favorite {
   hotelId       Int?
   post          Post?       @relation(fields: [postId], references: [postId], onDelete: Cascade)
   postId        Int?
-  destination   Destination @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
-  destinationId Int
+  destination   Destination? @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
+  destinationId Int?
 }
 
 model Hotel {
@@ -81,20 +84,25 @@ model Post {
   title       String
   description String
   address     String
+  city        String
+  category    String
   price       Float
+  features    String[]
   images      Json?
   user        User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId      Int
   favorites   Favorite[]
+  createdAt   DateTime   @default(now())
+  updateAt    DateTime   @default(now()) @updatedAt
 }
 
 model Destination {
   destinationId Int        @id @default(autoincrement())
-  title       String
-  location    String
-  district    String
-  description String
-  images      String[]
+  title         String
+  location      String
+  district      String
+  description   String
+  images        String[]
   user          User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
   favorites     Favorite[]
