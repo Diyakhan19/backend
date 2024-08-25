@@ -10,6 +10,7 @@ const getUserByEmail = (email) => {
       favorites: {
         select: {
           postId: true,
+          destinationId: true,
         },
       },
     },
@@ -34,6 +35,15 @@ const getUserById = (userId) => {
       favorites: {
         include: {
           post: true,
+          destination: {
+            include: {
+              _count: {
+                select: {
+                  favorites: true,
+                },
+              },
+            },
+          },
         },
       },
       hotels: true,

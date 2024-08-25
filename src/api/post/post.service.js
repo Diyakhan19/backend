@@ -36,6 +36,21 @@ const getSinglePost = (postId) => {
     where: {
       postId: +postId,
     },
+    include: {
+      user: {
+        select: {
+          userId: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
+      _count: {
+        select: {
+          favorites: true,
+        },
+      },
+    },
   });
 };
 

@@ -95,7 +95,7 @@ export const getSinglePost = async (req, res, next) => {
 // Add a post to favitu
 export const addPostToFavorite = async (req, res, next) => {
   try {
-    const { postId } = req.body;
+    const { postId, destinationId } = req.body;
     const userId = req.user.userId;
 
     const favorite = await service.getFavorite(userId, postId);

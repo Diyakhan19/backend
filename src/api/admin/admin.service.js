@@ -9,6 +9,13 @@ const getDestinations = (searchSchema) => {
     where: {
       OR: searchSchema,
     },
+    include: {
+      _count: {
+        select: {
+          favorites: true,
+        },
+      },
+    },
   });
 };
 
