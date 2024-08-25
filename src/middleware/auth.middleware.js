@@ -10,6 +10,8 @@ const auth = (req, res, next) => {
     "/api/auth/login",
     "/api/auth/signup",
     "/api/auth/user",
+    "/api/post/all",
+    "/api/post/single",
   ];
 
   console.log(req.params["0"]);
