@@ -1,5 +1,6 @@
 import prisma from "../../../config/db.js";
 
+// Updaet a user
 const updateUser = (userId, data) => {
   return prisma.user.update({
     where: {
@@ -9,6 +10,16 @@ const updateUser = (userId, data) => {
   });
 };
 
+// Get user by Id
+const getUser = (userId) => {
+  return prisma.user.findUnique({
+    where: {
+      userId: +userId,
+    },
+  });
+};
+
+// Get all users
 const getUsers = () => {
   return prisma.user.findMany({
     select: {
@@ -24,6 +35,7 @@ const getUsers = () => {
 
 const service = {
   updateUser,
+  getUser,
   getUsers,
 };
 

@@ -33,13 +33,14 @@ export var corsOptions = {
   },
   credentials: true,
 };
+
 app.use(cors(corsOptions));
 
 // Routes
 app.get("/api", (req, res) => {
   return res.send("Server is running...!");
 });
-app.use("*", auth);
+
 import authRouter from "./src/api/auth/auth.router.js";
 import userRouter from "./src/api/user/user.router.js";
 import adminRouter from "./src/api/admin/admin.router.js";

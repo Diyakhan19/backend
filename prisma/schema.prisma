@@ -23,6 +23,8 @@ model User {
   image        String?
   about        String?
   roles        String[]
+  likes        Int[] @default([])
+  visited      Int[]  @default([])
   createdAt    DateTime      @default(now())
   updateAt     DateTime      @default(now()) @updatedAt
   posts        Post[]
@@ -33,15 +35,16 @@ model User {
   sendrChat    Chat[]
   receiverChat Chat[]        @relation(name: "reciever")
   messages     Message[]
+  reviews      Review[]
 }
 
 model Favorite {
-  favId         Int         @id @default(autoincrement())
-  user          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  favId         Int          @id @default(autoincrement())
+  user          User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
-  hotel         Hotel?      @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotel         Hotel?       @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
   hotelId       Int?
-  post          Post?       @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  post          Post?        @relation(fields: [postId], references: [postId], onDelete: Cascade)
   postId        Int?
   destination   Destination? @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
   destinationId Int?
@@ -101,11 +104,27 @@ model Destination {
   title         String
   location      String
   district      String
+  mapUrl      String?
   description   String
+  likes         Int        @default(0)
+  visits        Int        @default(0)
   images        String[]
   user          User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
   favorites     Favorite[]
+  reviews       Review[]
+}
+
+model Review {
+  reviewId      Int         @id @default(autoincrement())
+  text          String
+  stars         Int
+  user          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId        Int
+  destination   Destination @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
+  destinationId Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt
 }
 
 model Chat {

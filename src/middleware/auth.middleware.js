@@ -5,22 +5,10 @@ dotenv.config({ silent: process.env.NODE_ENV === "production" });
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const auth = (req, res, next) => {
-  // Public Routes
-  const excludedPaths = [
-    "/api/auth/login",
-    "/api/auth/signup",
-    "/api/auth/user",
-    "/api/post/all",
-    "/api/post/single",
-  ];
-
   console.log(req.params["0"]);
 
   // Get token from header
   const token = req.header("Authorization") || req.header("authorization");
-
-  // Check if route is public
-  if (excludedPaths.includes(req.params["0"]) && !token) return next();
 
   // Check if no token exists
   if (!token) {

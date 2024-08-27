@@ -3,13 +3,14 @@ import { sendResponse } from "../../utils/response.js";
 
 export const addDestination = async (req, res, next) => {
   try {
-    const { title, location, district, description } = req.body;
+    const { title, location, district, description, mapUrl } = req.body;
     const images = req.files.map((file) => file.path);
 
     const newDestination = await service.createDestination({
       title,
       location,
       district,
+      mapUrl,
       description,
       images,
       userId: req.user.userId,
