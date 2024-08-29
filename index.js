@@ -45,12 +45,14 @@ import authRouter from "./src/api/auth/auth.router.js";
 import userRouter from "./src/api/user/user.router.js";
 import adminRouter from "./src/api/admin/admin.router.js";
 import postRouter from "./src/api/post/post.router.js";
+import hotelRouter from "./src/api/hotel/hotel.router.js";
 import destRouter from "./src/api/destination/dest.router.js";
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/post", postRouter);
+app.use("/api/hotel", hotelRouter);
 app.use("/api/destination", destRouter);
 
 // Error handler

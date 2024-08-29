@@ -23,9 +23,9 @@ export const addDestination = async (req, res, next) => {
   }
 };
 
-export const getAllDestinations = async (req, res) => {
+export const getAllDestinations = async (req, res, next) => {
   try {
-    const { search } = req.query;
+    const { search, sortBy } = req.query;
 
     const searchSchema = search
       ? [
@@ -49,7 +49,25 @@ export const getAllDestinations = async (req, res) => {
         ]
       : undefined;
 
-    const destinations = await service.getDestinations(searchSchema);
+    let orderBy = undefined;
+
+    if (sortBy === "Most visited") {
+      orderBy = {
+        visits: "desc",
+      };
+    } else if (sortBy === "Most liked" || sortBy === "Top 5") {
+      orderBy = {
+        likes: "desc",
+      };
+    } else if (sortBy === "Most recent") {
+      orderBy = {
+        createdAt: "desc",
+      };
+    }
+
+    console.log("++++>", orderBy);
+
+    const destinations = await service.getDestinations(searchSchema, orderBy);
 
     return sendResponse(res, "Get destinations successful", destinations);
   } catch (err) {

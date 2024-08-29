@@ -4,7 +4,7 @@ const createDestination = (data) => {
   return prisma.destination.create({ data });
 };
 
-const getDestinations = (searchSchema) => {
+const getDestinations = (searchSchema, orderBy) => {
   return prisma.destination.findMany({
     where: {
       OR: searchSchema,
@@ -16,6 +16,8 @@ const getDestinations = (searchSchema) => {
         },
       },
     },
+    orderBy: orderBy,
+    take: orderBy === "Top 5" ? 5 : undefined,
   });
 };
 

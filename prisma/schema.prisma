@@ -23,8 +23,8 @@ model User {
   image        String?
   about        String?
   roles        String[]
-  likes        Int[] @default([])
-  visited      Int[]  @default([])
+  likes        Int[]         @default([])
+  visited      Int[]         @default([])
   createdAt    DateTime      @default(now())
   updateAt     DateTime      @default(now()) @updatedAt
   posts        Post[]
@@ -42,8 +42,6 @@ model Favorite {
   favId         Int          @id @default(autoincrement())
   user          User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
-  hotel         Hotel?       @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
-  hotelId       Int?
   post          Post?        @relation(fields: [postId], references: [postId], onDelete: Cascade)
   postId        Int?
   destination   Destination? @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
@@ -51,16 +49,21 @@ model Favorite {
 }
 
 model Hotel {
-  hotelId   Int        @id @default(autoincrement())
-  name      String
-  address   String
-  images    String?
-  lat       Float?
-  lng       Float?
-  user      User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId    Int
-  favorites Favorite[]
-  rooms     Room[]
+  hotelId     Int      @id @default(autoincrement())
+  name        String
+  description String
+  address     String
+  images      Json?
+  city        String
+  rating      Float    @default(0)
+  mapUrl      String
+  facilities  String[]
+  user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      Int
+  rooms       Room[]
+  reviews     Review[]
+  createdAt   DateTime @default(now())
+  updateAt    DateTime @default(now()) @updatedAt
 }
 
 model Transport {
@@ -104,7 +107,7 @@ model Destination {
   title         String
   location      String
   district      String
-  mapUrl      String?
+  mapUrl        String?
   description   String
   likes         Int        @default(0)
   visits        Int        @default(0)
@@ -113,18 +116,22 @@ model Destination {
   userId        Int
   favorites     Favorite[]
   reviews       Review[]
+  createdAt     DateTime   @default(now())
+  updateAt      DateTime   @default(now()) @updatedAt
 }
 
 model Review {
-  reviewId      Int         @id @default(autoincrement())
+  reviewId      Int          @id @default(autoincrement())
   text          String
   stars         Int
-  user          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
-  destination   Destination @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
-  destinationId Int
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @default(now()) @updatedAt
+  destination   Destination? @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
+  destinationId Int?
+  hotel         Hotel?       @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotelId       Int?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
 }
 
 model Chat {
