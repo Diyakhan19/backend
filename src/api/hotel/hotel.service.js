@@ -1,9 +1,37 @@
 import prisma from "../../../config/db.js";
 
-// Create a new post
+// Create a new hotel
 const createHotel = (data) => {
   return prisma.hotel.create({
     data,
+  });
+};
+
+// Create a room
+const addRoom = (roomId, data) => {
+  return prisma.room.upsert({
+    where: {
+      roomId: +roomId,
+    },
+    create: data,
+    update: data,
+  });
+};
+
+// Update a hotel
+const updateRoom = (roomId, data) => {
+  return prisma.room.update({
+    where: {
+      roomId: +roomId,
+    },
+    data: data,
+  });
+};
+
+// Create a booking
+const createBooking = (data) => {
+  return prisma.booking.create({
+    data: data,
   });
 };
 
@@ -17,7 +45,7 @@ const deletePost = (postId) => {
 };
 
 // Get all posts
-const getAllHotels = (searchSchema, city, facilityFilter) => {
+const getAllHotels = (searchSchema, city, facilityFilter, limit, orderBy) => {
   return prisma.hotel.findMany({
     where: {
       city: city !== "" ? city : undefined,
@@ -31,73 +59,37 @@ const getAllHotels = (searchSchema, city, facilityFilter) => {
         },
       },
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: orderBy,
+    take: limit ? +limit : undefined,
   });
 };
 
 // Get a single post
-const getSinglePost = (postId) => {
-  return prisma.post.findUnique({
+const getSingleHotel = (hotelId) => {
+  return prisma.hotel.findUnique({
     where: {
-      postId: +postId,
+      hotelId: +hotelId,
     },
     include: {
-      user: {
-        select: {
-          userId: true,
-          name: true,
-          email: true,
-          image: true,
-        },
-      },
+      rooms: true,
+      reviews: true,
       _count: {
         select: {
-          favorites: true,
+          reviews: true,
         },
       },
-    },
-  });
-};
-
-// Get favorite
-const getFavorite = (userId, postId) => {
-  return prisma.favorite.findFirst({
-    where: {
-      userId: +userId,
-      postId: +postId,
-    },
-  });
-};
-
-// Get favorite
-const removeFavorite = (favId) => {
-  return prisma.favorite.delete({
-    where: {
-      favId: +favId,
-    },
-  });
-};
-
-// Add post to favorites
-const addPostToFavorite = (userId, postId) => {
-  return prisma.favorite.create({
-    data: {
-      userId: +userId,
-      postId: +postId,
     },
   });
 };
 
 const service = {
   createHotel,
+  updateRoom,
+  addRoom,
+  createBooking,
   deletePost,
   getAllHotels,
-  getSinglePost,
-  getFavorite,
-  removeFavorite,
-  addPostToFavorite,
+  getSingleHotel,
 };
 
 export default service;

@@ -1,31 +1,40 @@
 import express from "express";
 import { validate } from "../../utils/schema.validation.js";
-import { hotelSchema } from "./hotel.schema.js";
+import { bookingSchema, hotelSchema, roomSchema } from "./hotel.schema.js";
 import * as controller from "./hotel.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 import auth from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// Create new post
+// Create new hotel
 router.post(
   "/new",
   auth,
-  upload.hotelImgs.array("images", 5),
+  upload.hotelImgs.array("images", 8),
   validate(hotelSchema),
   controller.createHotel
 );
 
+// Add room to hotel
+router.post(
+  "/room",
+  auth,
+  upload.roomImgs.array("images", 5),
+  validate(roomSchema),
+  controller.addRoom
+);
+
+// Book a room in hotel
+router.post("/booking", auth, validate(bookingSchema), controller.bookRoom);
+
 // Delete a post
 router.delete("/delete", auth, controller.deletePost);
 
-// Get all posts
+// Get all hotels
 router.post("/all", controller.getAllHotels);
 
-// Get one post
-router.get("/single", controller.getSinglePost);
-
-// Add a post to favorits
-router.post("/favorite", auth, controller.addPostToFavorite);
+// Get one hotel
+router.get("/single", controller.getSingleHotel);
 
 export default router;

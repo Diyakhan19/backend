@@ -46,7 +46,15 @@ const getUserById = (userId) => {
           },
         },
       },
-      hotels: true,
+      hotels: {
+        include: {
+          _count: {
+            select: {
+              reviews: true,
+            },
+          },
+        },
+      },
     },
   });
 };

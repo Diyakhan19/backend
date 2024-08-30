@@ -36,6 +36,7 @@ model User {
   receiverChat Chat[]        @relation(name: "reciever")
   messages     Message[]
   reviews      Review[]
+  bookings     Booking[]
 }
 
 model Favorite {
@@ -77,12 +78,41 @@ model Transport {
 }
 
 model Room {
-  roomId  Int    @id @default(autoincrement())
-  title   String
-  images  Json?
-  price   Float
-  hotel   Hotel  @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
-  hotelId Int
+  roomId        Int       @id @default(autoincrement())
+  name          String
+  description   String
+  size          String
+  bedType       String
+  capacity      String
+  pricePerNight Float
+  isBooked      Boolean   @default(false)
+  checkin       String?
+  checkout      String?
+  view          String
+  images        Json?
+  hotel         Hotel     @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotelId       Int
+  createdAt     DateTime  @default(now())
+  updateAt      DateTime  @default(now()) @updatedAt
+  bookings      Booking[]
+}
+
+model Booking {
+  bookingId      Int      @id @default(autoincrement())
+  name           String
+  nationality    String
+  phone          String
+  email          String
+  checkin        String
+  checkout       String
+  guests         String
+  specialRequest String?
+  user        User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      Int
+  room           Room     @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  roomId         Int
+  createdAt      DateTime @default(now())
+  updateAt       DateTime @default(now()) @updatedAt
 }
 
 model Post {

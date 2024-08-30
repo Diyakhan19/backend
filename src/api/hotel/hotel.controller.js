@@ -26,6 +26,103 @@ export const createHotel = async (req, res, next) => {
   }
 };
 
+// Add a room to hotel
+export const addRoom = async (req, res, next) => {
+  try {
+    const {
+      roomId,
+      hotelId,
+      name,
+      description,
+      size,
+      bedType,
+      capacity,
+      pricePerNight,
+      view,
+      oldImages,
+    } = req.body;
+
+    let images = null;
+
+    if (oldImages) {
+      images = JSON.parse(oldImages);
+    }
+
+    if (req.files && req.files.length !== 0) {
+      images = req.files.map((img) => img.path);
+    }
+
+    const data = {
+      name,
+      hotelId: +hotelId,
+      description,
+      size,
+      bedType,
+      capacity,
+      pricePerNight: +pricePerNight,
+      view,
+      images: images,
+    };
+
+    const id = +roomId || -1;
+
+    const room = await service.addRoom(id, data);
+
+    return sendResponse(res, "Room added successfully", room);
+  } catch (err) {
+    console.log("Login error:", err);
+    next({ status: 500, msg: err.message });
+  }
+};
+
+// Book a room in a hotel
+export const bookRoom = async (req, res, next) => {
+  try {
+    const {
+      roomId,
+      hotelId,
+      name,
+      nationality,
+      phone,
+      email,
+      checkin,
+      checkout,
+      guests,
+      specialRequest,
+    } = req.body;
+
+    const userId = req.user.userId;
+
+    const data = {
+      roomId,
+      userId,
+      name,
+      nationality,
+      phone,
+      email,
+      checkin,
+      checkout,
+      guests,
+      specialRequest,
+    };
+
+    const booking = await service.createBooking(data);
+
+    const updateRoomData = {
+      isBooked: true,
+      checkin,
+      checkout,
+    };
+
+    await service.updateRoom(roomId, updateRoomData);
+
+    return sendResponse(res, "Booking saved successfully", booking);
+  } catch (err) {
+    console.log("Login error:", err);
+    next({ status: 500, msg: err.message });
+  }
+};
+
 // Delet a post
 export const deletePost = async (req, res, next) => {
   try {
@@ -43,7 +140,7 @@ export const deletePost = async (req, res, next) => {
 // Get all hotels
 export const getAllHotels = async (req, res, next) => {
   try {
-    const { search, city, facilities } = req.body;
+    const { search, city, facilities, limit, sortBy } = req.body;
 
     const searchSchema = search
       ? [
@@ -74,10 +171,22 @@ export const getAllHotels = async (req, res, next) => {
           }
         : undefined;
 
+    let orderBy = {
+      createdAt: "desc",
+    };
+
+    if (sortBy === "rating") {
+      orderBy = {
+        rating: "desc",
+      };
+    }
+
     const hotels = await service.getAllHotels(
       searchSchema,
       city,
-      facilityFilter
+      facilityFilter,
+      limit,
+      orderBy
     );
 
     return sendResponse(res, "Get hotels successful", hotels);
@@ -88,41 +197,13 @@ export const getAllHotels = async (req, res, next) => {
 };
 
 // Get all posts
-export const getSinglePost = async (req, res, next) => {
+export const getSingleHotel = async (req, res, next) => {
   try {
-    const { postId } = req.query;
+    const { hotelId } = req.query;
 
-    const post = await service.getSinglePost(postId);
+    const hotel = await service.getSingleHotel(hotelId);
 
-    return sendResponse(res, "Get post successful", post);
-  } catch (err) {
-    console.log("Login error:", err);
-    next({ status: 500, msg: err.message });
-  }
-};
-
-// Add a post to favitu
-export const addPostToFavorite = async (req, res, next) => {
-  try {
-    const { postId } = req.body;
-    const userId = req.user.userId;
-
-    const favorite = await service.getFavorite(userId, postId);
-
-    if (favorite) {
-      const removedFav = await service.removeFavorite(favorite.favId);
-      return sendResponse(res, "Post removed from favorites", {
-        action: "removed",
-        postId: removedFav.postId,
-      });
-    }
-
-    const newFav = await service.addPostToFavorite(userId, postId);
-
-    return sendResponse(res, "Post added to favorites", {
-      action: "added",
-      postId: newFav.postId,
-    });
+    return sendResponse(res, "Get hotel successful", hotel);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });
