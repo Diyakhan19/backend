@@ -5,7 +5,7 @@ export const addDestination = async (req, res, next) => {
   try {
     const { title, location, district, description, mapUrl } = req.body;
     const images = req.files.map((file) => file.path);
-
+  
     const newDestination = await service.createDestination({
       title,
       location,
@@ -64,8 +64,6 @@ export const getAllDestinations = async (req, res, next) => {
         createdAt: "desc",
       };
     }
-
-    console.log("++++>", orderBy);
 
     const destinations = await service.getDestinations(searchSchema, orderBy);
 

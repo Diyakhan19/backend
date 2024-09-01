@@ -57,6 +57,7 @@ app.use("/api/destination", destRouter);
 
 // Error handler
 app.use((err, req, res, next) => {
+  console.log("++++++++++> ", err)
   if (err.msg) {
     return res.status(err.status || 403).json({
       success: false,
