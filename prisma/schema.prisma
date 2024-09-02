@@ -25,6 +25,7 @@ model User {
   roles        String[]
   likes        Int[]         @default([])
   visited      Int[]         @default([])
+  bookmarks    Int[]         @default([])
   createdAt    DateTime      @default(now())
   updateAt     DateTime      @default(now()) @updatedAt
   posts        Post[]
@@ -68,13 +69,22 @@ model Hotel {
 }
 
 model Transport {
-  transportId Int     @id @default(autoincrement())
+  transportId Int      @id @default(autoincrement())
   title       String
+  description String
+  make        String
+  model       String
   type        String
-  address     String
-  images      String?
-  user        User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  pricing     Json
+  phone       String
+  capacity    String
+  city        String
+  status      String   @default("available")
+  images      Json?
+  user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId      Int
+  createdAt   DateTime @default(now())
+  updateAt    DateTime @default(now()) @updatedAt
 }
 
 model Room {
@@ -107,8 +117,8 @@ model Booking {
   checkout       String
   guests         String
   specialRequest String?
-  user        User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId      Int
+  user           User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId         Int
   room           Room     @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
   roomId         Int
   createdAt      DateTime @default(now())

@@ -47,6 +47,7 @@ import adminRouter from "./src/api/admin/admin.router.js";
 import postRouter from "./src/api/post/post.router.js";
 import hotelRouter from "./src/api/hotel/hotel.router.js";
 import destRouter from "./src/api/destination/dest.router.js";
+import transportRouter from "./src/api/transport/transport.router.js";
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
@@ -54,10 +55,11 @@ app.use("/api/admin", adminRouter);
 app.use("/api/post", postRouter);
 app.use("/api/hotel", hotelRouter);
 app.use("/api/destination", destRouter);
+app.use("/api/transport", transportRouter);
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.log("++++++++++> ", err)
+  console.log("++++++++++> ", err);
   if (err.msg) {
     return res.status(err.status || 403).json({
       success: false,
