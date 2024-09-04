@@ -15,29 +15,30 @@ datasource db {
 }
 
 model User {
-  userId       Int           @id @default(autoincrement())
+  userId       Int                @id @default(autoincrement())
   name         String
-  email        String        @unique
+  email        String             @unique
   password     String
-  status       String        @default("pending")
+  status       String             @default("pending")
   image        String?
   about        String?
   roles        String[]
-  likes        Int[]         @default([])
-  visited      Int[]         @default([])
-  bookmarks    Int[]         @default([])
-  createdAt    DateTime      @default(now())
-  updateAt     DateTime      @default(now()) @updatedAt
+  likes        Int[]              @default([])
+  visited      Int[]              @default([])
+  bookmarks    Int[]              @default([])
+  createdAt    DateTime           @default(now())
+  updateAt     DateTime           @default(now()) @updatedAt
   posts        Post[]
   hotels       Hotel[]
   transports   Transport[]
   destination  Destination[]
   favorites    Favorite[]
   sendrChat    Chat[]
-  receiverChat Chat[]        @relation(name: "reciever")
+  receiverChat Chat[]             @relation(name: "reciever")
   messages     Message[]
   reviews      Review[]
   bookings     Booking[]
+  rented       TransportBooking[]
 }
 
 model Favorite {
@@ -69,7 +70,7 @@ model Hotel {
 }
 
 model Transport {
-  transportId Int      @id @default(autoincrement())
+  transportId Int                @id @default(autoincrement())
   title       String
   description String
   make        String
@@ -79,12 +80,13 @@ model Transport {
   phone       String
   capacity    String
   city        String
-  status      String   @default("available")
+  status      String             @default("available")
   images      Json?
-  user        User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user        User               @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId      Int
-  createdAt   DateTime @default(now())
-  updateAt    DateTime @default(now()) @updatedAt
+  createdAt   DateTime           @default(now())
+  updateAt    DateTime           @default(now()) @updatedAt
+  bookings    TransportBooking[]
 }
 
 model Room {
@@ -123,6 +125,22 @@ model Booking {
   roomId         Int
   createdAt      DateTime @default(now())
   updateAt       DateTime @default(now()) @updatedAt
+}
+
+model TransportBooking {
+  bookingId   Int       @id @default(autoincrement())
+  name        String
+  nationality String
+  phone       String
+  email       String
+  passangers  Int
+  pricePlan String
+  user        User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      Int
+  transport   Transport @relation(fields: [transportId], references: [transportId], onDelete: Cascade)
+  transportId Int
+  createdAt   DateTime  @default(now())
+  updateAt    DateTime  @default(now()) @updatedAt
 }
 
 model Post {

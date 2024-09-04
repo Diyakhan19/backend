@@ -32,6 +32,32 @@ const getUserById = (userId) => {
     },
     include: {
       posts: true,
+      transports: true,
+      bookings: {
+        include: {
+          room: {
+            select: {
+              name: true,
+              hotel: {
+                select: {
+                  hotelId: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      rented: {
+        include: {
+          transport: {
+            select: {
+              title: true,
+              type: true,
+            },
+          },
+        },
+      },
       favorites: {
         include: {
           post: true,

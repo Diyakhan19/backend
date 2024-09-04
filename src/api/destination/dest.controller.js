@@ -103,15 +103,22 @@ export const addVisitedDestination = async (req, res, next) => {
 // Add a review
 export const addReview = async (req, res, next) => {
   try {
-    const { destinationId, stars, review } = req.body;
+    const { destinationId, hotelId, stars, review } = req.body;
     const userId = req.user.userId;
 
     const data = {
       userId: +userId,
-      destinationId: +destinationId,
       stars: stars,
       text: review,
     };
+
+    if (destinationId) {
+      data.destinationId = +destinationId;
+    }
+
+    if (hotelId) {
+      data.hotelId = +hotelId;
+    }
 
     const newReview = await service.addReview(data);
 

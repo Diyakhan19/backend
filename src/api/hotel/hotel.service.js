@@ -71,8 +71,25 @@ const getSingleHotel = (hotelId) => {
       hotelId: +hotelId,
     },
     include: {
-      rooms: true,
-      reviews: true,
+      rooms: {
+        include: {
+          bookings: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
+      reviews: {
+        include: {
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
       _count: {
         select: {
           reviews: true,

@@ -122,3 +122,58 @@ export const bookmarkTransport = async (req, res, next) => {
     next({ status: 500, msg: err.message });
   }
 };
+
+// Transport booking
+export const bookTranport = async (req, res, next) => {
+  try {
+    const {
+      transportId,
+      name,
+      nationality,
+      phone,
+      email,
+      passangers,
+      pricePlan,
+    } = req.body;
+
+    const userId = +req.user.userId;
+
+    const data = {
+      userId,
+      transportId: +transportId,
+      name,
+      nationality,
+      phone,
+      email,
+      passangers: +passangers,
+      pricePlan,
+    };
+
+    const booking = await service.createBooking(data);
+
+    await service.updateTransport(transportId, { status: "rented" });
+
+    return sendResponse(res, "Transport rented successfully", booking);
+  } catch (err) {
+    console.log("Login error:", err);
+    next({ status: 500, msg: err.message });
+  }
+};
+
+// Update status
+export const updateStatus = async (req, res, next) => {
+  try {
+    const { transportId, status } = req.body;
+
+    const data = {
+      status,
+    };
+
+    const transport = await service.updateTransport(transportId, data);
+
+    return sendResponse(res, "Status updated successfully", transport);
+  } catch (err) {
+    console.log("Login error:", err);
+    next({ status: 500, msg: err.message });
+  }
+};

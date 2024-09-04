@@ -3,7 +3,12 @@ import auth from "../../middleware/auth.middleware.js";
 import * as controller from "./transport.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 import { validate } from "../../utils/schema.validation.js";
-import { bookmarkSchema, transportSchema } from "./transport.schema.js";
+import {
+  bookingSchema,
+  bookmarkSchema,
+  transportSchema,
+  transportStatus,
+} from "./transport.schema.js";
 
 const router = express.Router();
 
@@ -28,6 +33,17 @@ router.post(
   auth,
   validate(bookmarkSchema),
   controller.bookmarkTransport
+);
+
+// Book a transport
+router.post("/booking", auth, validate(bookingSchema), controller.bookTranport);
+
+// Update a transport status
+router.patch(
+  "/status",
+  auth,
+  validate(transportStatus),
+  controller.updateStatus
 );
 
 export default router;
