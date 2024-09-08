@@ -33,8 +33,8 @@ model User {
   transports   Transport[]
   destination  Destination[]
   favorites    Favorite[]
-  sendrChat    Chat[]
-  receiverChat Chat[]             @relation(name: "reciever")
+  chats        Chat[]
+  participants ChatParticipant[]
   messages     Message[]
   reviews      Review[]
   bookings     Booking[]
@@ -67,6 +67,7 @@ model Hotel {
   reviews     Review[]
   createdAt   DateTime @default(now())
   updateAt    DateTime @default(now()) @updatedAt
+  chats       Chat[]
 }
 
 model Transport {
@@ -134,7 +135,7 @@ model TransportBooking {
   phone       String
   email       String
   passangers  Int
-  pricePlan String
+  pricePlan   String
   user        User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId      Int
   transport   Transport @relation(fields: [transportId], references: [transportId], onDelete: Cascade)
@@ -158,6 +159,7 @@ model Post {
   favorites   Favorite[]
   createdAt   DateTime   @default(now())
   updateAt    DateTime   @default(now()) @updatedAt
+  chats       Chat[]
 }
 
 model Destination {
@@ -193,21 +195,39 @@ model Review {
 }
 
 model Chat {
-  chatId     Int       @id @default(autoincrement())
-  sender     User      @relation(fields: [senderId], references: [userId], onDelete: Cascade)
-  senderId   Int
-  receiver   User      @relation(name: "reciever", fields: [receiverId], references: [userId], onDelete: Cascade)
-  receiverId Int
-  messages   Message[]
+  chatId       Int               @id @default(autoincrement())
+  initiator    User              @relation(fields: [initiatorId], references: [userId], onDelete: Cascade)
+  initiatorId  Int
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @default(now()) @updatedAt
+  deletedAt    DateTime?
+  participants ChatParticipant[]
+  messages     Message[]
+  post         Post?             @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  postId       Int?
+  hotel        Hotel             @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotelId      Int
+}
+
+model ChatParticipant {
+  chatParticipantId Int      @id @default(autoincrement())
+  chat              Chat     @relation(fields: [chatId], references: [chatId], onDelete: Cascade)
+  chatId            Int
+  participant       User     @relation(fields: [participantId], references: [userId], onDelete: Cascade)
+  participantId     Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
 }
 
 model Message {
-  messageId    Int      @id @default(autoincrement())
-  conversation Chat     @relation(fields: [chatId], references: [chatId], onDelete: Cascade)
-  chatId       Int
-  user         User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId       Int
-  text         String?
-  attachments  Json?
-  createdAt    DateTime @default(now())
+  messageId   Int      @id @default(autoincrement())
+  text        String
+  isSeen      Boolean  @default(false)
+  attachments Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  sender      User     @relation(fields: [senderId], references: [userId], onDelete: Cascade)
+  senderId    Int
+  chat        Chat     @relation(fields: [chatId], references: [chatId], onDelete: Cascade)
+  chatId      Int
 }

@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import auth from "./src/middleware/auth.middleware.js";
+import socket from "./src/utils/socket.io.js";
 
 const app = express();
 
@@ -75,3 +75,6 @@ app.use((err, req, res, next) => {
 });
 
 const server = app.listen(5000, () => console.log("Server is running...!"));
+
+// Initial socket connection on same port as server
+socket.init(server);

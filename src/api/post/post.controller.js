@@ -4,8 +4,26 @@ import { sendResponse } from "../../utils/response.js";
 // Create a new post
 export const createPost = async (req, res, next) => {
   try {
-    const { title, description, address, city, price, category, features } =
-      req.body;
+    const {
+      postId,
+      title,
+      description,
+      address,
+      city,
+      price,
+      category,
+      features,
+      oldImages,
+    } = req.body;
+
+    let images = oldImages ? JSON.parse(oldImages) : [];
+    if (req.files) {
+      req.files.forEach((img) => {
+        images.push(img.path);
+      });
+    }
+
+    const id = postId ? +postId : -1;
 
     const data = {
       title,
@@ -15,13 +33,13 @@ export const createPost = async (req, res, next) => {
       price: +price,
       category,
       features: JSON.parse(features),
-      images: req.files ? req.files.map((img) => img.path) : null,
+      images: images,
       userId: req.user.userId,
     };
 
-    const post = await service.createPost(data);
+    const post = await service.createPost(id, data);
 
-    return sendResponse(res, "Post created successfully", post);
+    return sendResponse(res, "Post saved successfully", post);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });

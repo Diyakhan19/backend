@@ -1,0 +1,6 @@
+{
+  "6001": "Numeric receiver Id is required",
+  "6002": "Numeric chat Id is required",
+  "6003": "Message is required",
+  "6004": "Numeric message Id is required"
+}

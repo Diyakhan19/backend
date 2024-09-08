@@ -1,9 +1,13 @@
 import prisma from "../../../config/db.js";
 
 // Create a new post
-const createPost = (data) => {
-  return prisma.post.create({
-    data,
+const createPost = (id, data) => {
+  return prisma.post.upsert({
+    where: {
+      postId: id,
+    },
+    create: data,
+    update: data,
   });
 };
 

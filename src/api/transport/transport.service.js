@@ -1,9 +1,13 @@
 import prisma from "../../../config/db.js";
 
 // Create a new transport
-const createTransport = (data) => {
-  return prisma.transport.create({
-    data,
+const createTransport = (id, data) => {
+  return prisma.transport.upsert({
+    where: {
+      transportId: id,
+    },
+    create: data,
+    update: data,
   });
 };
 
@@ -18,9 +22,14 @@ const updateTransport = (transportId, data) => {
 };
 
 // Get all tranposts
-const getTransports = (searchSchema, type, city) => {
+const getTransports = (searchSchema, type, city, trasportIds) => {
   return prisma.transport.findMany({
     where: {
+      transportId: trasportIds
+        ? {
+            in: trasportIds,
+          }
+        : undefined,
       status: {
         not: "rented",
       },
@@ -53,6 +62,15 @@ const getTransport = (transportId) => {
   });
 };
 
+// Delete a transport
+const deleteTransport = (transportId) => {
+  return prisma.transport.delete({
+    where: {
+      transportId: +transportId,
+    },
+  });
+};
+
 // Create booking
 const createBooking = (data) => {
   return prisma.transportBooking.create({
@@ -65,6 +83,7 @@ const service = {
   updateTransport,
   getTransports,
   getTransport,
+  deleteTransport,
   createBooking,
 };
 

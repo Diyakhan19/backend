@@ -4,6 +4,7 @@ dotenv.config({ silent: process.env.NODE_ENV === "production" });
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Auth function
 const auth = (req, res, next) => {
   console.log(req.params["0"]);
 
@@ -40,3 +41,22 @@ const auth = (req, res, next) => {
 };
 
 export default auth;
+
+// Decode token for socket
+export const socketAuth = (socket, next) => {
+  const token = socket.handshake.headers?.token;
+
+  try {
+    jwt.verify(token, JWT_SECRET, (error, decoded) => {
+      if (error) {
+        return next(new Error("Error in socket connection"));
+      } else {
+        socket.userId = decoded.user.userId;
+        next();
+      }
+    });
+  } catch (error) {
+    console.log("Something went wrong with decoding token in socket");
+    return next(new Error("Error in socket connection"));
+  }
+};

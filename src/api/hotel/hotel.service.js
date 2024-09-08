@@ -1,9 +1,32 @@
 import prisma from "../../../config/db.js";
 
 // Create a new hotel
-const createHotel = (data) => {
-  return prisma.hotel.create({
-    data,
+const createHotel = (id, data) => {
+  return prisma.hotel.upsert({
+    where: {
+      hotelId: id,
+    },
+    create: data,
+    update: data,
+  });
+};
+
+// Update a  hotel
+const updateHotel = (id, data) => {
+  return prisma.hotel.update({
+    where: {
+      hotelId: id,
+    },
+    data: data,
+  });
+};
+
+// Delete a hotel
+const deleteHotel = (hotelId) => {
+  return prisma.hotel.delete({
+    where: {
+      hotelId: +hotelId,
+    },
   });
 };
 
@@ -99,14 +122,29 @@ const getSingleHotel = (hotelId) => {
   });
 };
 
+// Get hotel average rating
+const getHotelRating = (hotelId) => {
+  return prisma.review.aggregate({
+    where: {
+      hotelId: +hotelId,
+    },
+    _avg: {
+      stars: true,
+    },
+  });
+};
+
 const service = {
   createHotel,
+  updateHotel,
+  deleteHotel,
   updateRoom,
   addRoom,
   createBooking,
   deletePost,
   getAllHotels,
   getSingleHotel,
+  getHotelRating,
 };
 
 export default service;

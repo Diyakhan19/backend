@@ -28,8 +28,8 @@ router.post(
 // Book a room in hotel
 router.post("/booking", auth, validate(bookingSchema), controller.bookRoom);
 
-// Delete a post
-router.delete("/delete", auth, controller.deletePost);
+// Delete hotel
+router.delete("/delete", auth, controller.deleteHotel);
 
 // Get all hotels
 router.post("/all", controller.getAllHotels);

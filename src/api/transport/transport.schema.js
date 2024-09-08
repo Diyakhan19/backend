@@ -11,7 +11,7 @@ export const transportSchema = [
   body("capacity", "Capacity is required").notEmpty().isString(),
 ];
 
-export const bookmarkSchema = [
+export const bodyIdSchema = [
   body("transportId", "Valid Transport Id is required").notEmpty().isNumeric(),
 ];
 

@@ -42,6 +42,7 @@ const getUserById = (userId) => {
                 select: {
                   hotelId: true,
                   name: true,
+                  images: true,
                 },
               },
             },
@@ -54,6 +55,7 @@ const getUserById = (userId) => {
             select: {
               title: true,
               type: true,
+              images: true,
             },
           },
         },

@@ -4,7 +4,25 @@ import { sendResponse } from "../../utils/response.js";
 // Create a new post
 export const createHotel = async (req, res, next) => {
   try {
-    const { name, description, address, city, mapUrl, facilities } = req.body;
+    const {
+      hotelId,
+      name,
+      description,
+      address,
+      city,
+      mapUrl,
+      facilities,
+      oldImages,
+    } = req.body;
+
+    let images = oldImages ? JSON.parse(oldImages) : [];
+    if (req.files) {
+      req.files.forEach((img) => {
+        images.push(img.path);
+      });
+    }
+
+    const id = hotelId ? +hotelId : -1;
 
     const data = {
       name,
@@ -13,13 +31,13 @@ export const createHotel = async (req, res, next) => {
       city,
       mapUrl,
       facilities: JSON.parse(facilities),
-      images: req.files ? req.files.map((img) => img.path) : null,
+      images: images,
       userId: req.user.userId,
     };
 
-    const hotel = await service.createHotel(data);
+    const hotel = await service.createHotel(id, data);
 
-    return sendResponse(res, "Hotel posted successfully", hotel);
+    return sendResponse(res, "Hotel saved successfully", hotel);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });
@@ -124,13 +142,13 @@ export const bookRoom = async (req, res, next) => {
 };
 
 // Delet a post
-export const deletePost = async (req, res, next) => {
+export const deleteHotel = async (req, res, next) => {
   try {
-    const { postId } = req.body;
+    const { hotelId } = req.body;
 
-    const post = await service.deletePost(postId);
+    const hotel = await service.deleteHotel(hotelId);
 
-    return sendResponse(res, "Post deleted successfully", post);
+    return sendResponse(res, "Hotel deleted successfully", hotel);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });

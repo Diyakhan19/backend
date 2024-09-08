@@ -1,5 +1,6 @@
 import service from "./dest.service.js";
 import userService from "../user/user.service.js";
+import hotelService from "../hotel/hotel.service.js";
 import { sendResponse } from "../../utils/response.js";
 
 // Add a destination to favitu
@@ -121,6 +122,16 @@ export const addReview = async (req, res, next) => {
     }
 
     const newReview = await service.addReview(data);
+
+    if (hotelId) {
+      const rating = await hotelService.getHotelRating(hotelId);
+
+      const data = {
+        rating: rating._avg.stars,
+      };
+
+      await hotelService.updateHotel(hotelId, data);
+    }
 
     return sendResponse(res, "Review added successfully", newReview);
   } catch (err) {

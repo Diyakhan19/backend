@@ -6,6 +6,7 @@ import { sendResponse } from "../../utils/response.js";
 export const createTransport = async (req, res, next) => {
   try {
     const {
+      transportId,
       title,
       description,
       make,
@@ -15,7 +16,17 @@ export const createTransport = async (req, res, next) => {
       pricing,
       phone,
       capacity,
+      oldImages,
     } = req.body;
+
+    let images = oldImages ? JSON.parse(oldImages) : [];
+    if (req.files) {
+      req.files.forEach((img) => {
+        images.push(img.path);
+      });
+    }
+
+    const id = transportId ? +transportId : -1;
 
     const data = {
       title,
@@ -27,13 +38,13 @@ export const createTransport = async (req, res, next) => {
       phone,
       capacity,
       city,
-      images: req.files ? req.files.map((img) => img.path) : null,
+      images: images,
       userId: req.user.userId,
     };
 
-    const transport = await service.createTransport(data);
+    const transport = await service.createTransport(id, data);
 
-    return sendResponse(res, "Transport created successfully", transport);
+    return sendResponse(res, "Transport saved successfully", transport);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });
@@ -43,7 +54,7 @@ export const createTransport = async (req, res, next) => {
 // Get all transports
 export const getTransports = async (req, res, next) => {
   try {
-    const { search, type, city } = req.body;
+    const { search, type, city, trasportIds } = req.body;
 
     const searchSchema = search
       ? [
@@ -67,7 +78,12 @@ export const getTransports = async (req, res, next) => {
         ]
       : undefined;
 
-    const transports = await service.getTransports(searchSchema, type, city);
+    const transports = await service.getTransports(
+      searchSchema,
+      type,
+      city,
+      trasportIds
+    );
 
     return sendResponse(res, "Get transports successful", transports);
   } catch (err) {
@@ -84,6 +100,20 @@ export const getSingleTransport = async (req, res, next) => {
     const transport = await service.getTransport(transportId);
 
     return sendResponse(res, "Get transport successful", transport);
+  } catch (err) {
+    console.log("Login error:", err);
+    next({ status: 500, msg: err.message });
+  }
+};
+
+// Delete a transpoet
+export const deleteTransport = async (req, res, next) => {
+  try {
+    const { transportId } = req.body;
+
+    const transport = await service.deleteTransport(transportId);
+
+    return sendResponse(res, "Transport deleted successfully", transport);
   } catch (err) {
     console.log("Login error:", err);
     next({ status: 500, msg: err.message });

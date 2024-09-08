@@ -31,7 +31,21 @@ export const signup = async (req, res, next) => {
 
     user.password = undefined;
 
-    return sendResponse(res, "Signup successful", user);
+    // Token JWT
+    const payload = {
+      userId: user.userId,
+      email: user.email,
+      roles: user.roles,
+    };
+
+    const token = await getToken(payload, "365d");
+
+    const sendData = {
+      token: token,
+      user: user,
+    };
+
+    return sendResponse(res, "Signup successful", sendData);
   } catch (err) {
     console.error("Signup error:", err);
     next({ status: 500, msg: err.message });
@@ -61,10 +75,10 @@ export const login = async (req, res, next) => {
     const payload = {
       userId: user.userId,
       email: user.email,
-      role: user.role,
+      roles: user.roles,
     };
 
-    const token = await getToken(payload, "5d");
+    const token = await getToken(payload, "365d");
 
     const data = {
       token: token,

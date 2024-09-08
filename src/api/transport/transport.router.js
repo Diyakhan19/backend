@@ -5,7 +5,7 @@ import upload from "../../middleware/upload.middleware.js";
 import { validate } from "../../utils/schema.validation.js";
 import {
   bookingSchema,
-  bookmarkSchema,
+  bodyIdSchema,
   transportSchema,
   transportStatus,
 } from "./transport.schema.js";
@@ -27,11 +27,19 @@ router.post("/all", controller.getTransports);
 // Get a single transport
 router.get("/single", controller.getSingleTransport);
 
+// Book a transport
+router.delete(
+  "/delete",
+  auth,
+  validate(bodyIdSchema),
+  controller.deleteTransport
+);
+
 // Bookmark a transport
 router.post(
   "/bookmark",
   auth,
-  validate(bookmarkSchema),
+  validate(bodyIdSchema),
   controller.bookmarkTransport
 );
 
