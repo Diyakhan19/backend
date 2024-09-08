@@ -48,6 +48,7 @@ import postRouter from "./src/api/post/post.router.js";
 import hotelRouter from "./src/api/hotel/hotel.router.js";
 import destRouter from "./src/api/destination/dest.router.js";
 import transportRouter from "./src/api/transport/transport.router.js";
+import { addAdmin } from "./src/utils/admin.js";
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
@@ -78,3 +79,6 @@ const server = app.listen(5000, () => console.log("Server is running...!"));
 
 // Initial socket connection on same port as server
 socket.init(server);
+
+// Add admin
+addAdmin();
