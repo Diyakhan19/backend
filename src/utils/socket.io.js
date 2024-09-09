@@ -1,12 +1,13 @@
 import { Server } from "socket.io";
 import { socketAuth } from "../middleware/auth.middleware.js";
 import service from "../api/chat/chat.service.js";
+import upload from "../middleware/upload.middleware.js";
 
 export let io;
 
 // Inititialize the socket server
 const init = (server) => {
-  io = new Server(server);
+  io = new Server(server, { cors: { origin: "*" } });
 
   if (io) {
     io.use(socketAuth).on("connection", (socket) => {
@@ -17,43 +18,46 @@ const init = (server) => {
       }
 
       // Save and send a message
-      const sendMsg = (receiverId, data) => {
-        io.to(receiverId).emit("receiveMessage", data);
-      };
+      // const sendMsg = (receiverId, data) => {
+      //   io.to(receiverId).emit("receiveMessage", data);
+      // };
 
-      socket.on("sendMessage", async (payload) => {
-        try {
-          const { chatId, receiverId, text } = payload;
-          const senderId = socket?.userId;
+      // socket.on("sendMessage", async (payload, callback) => {
+      //   try {
+      //     const { chatId, receiverId, text } = payload;
+      //     const senderId = socket?.userId;
 
-          if (!isNaN(chatId) && !isNaN(receiverId) && text !== "") {
-            const message = await service.saveMessage(chatId, senderId, text);
+      //     if (!isNaN(chatId) && !isNaN(receiverId) && text !== "") {
+      //       const message = await service.saveMessage(chatId, senderId, text);
 
-            if (message) {
-              const msgData = {
-                chatId,
-                senderId,
-                text,
-              };
+      //       if (message) {
+      //         // Send real time message via socket
+      //         sendMsg(receiverId, message);
 
-              // Send real time message via socket
-              sendMsg(receiverId, msgData);
-            }
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      });
+      //         // Respond to client
+      //         callback({
+      //           success: true,
+      //           message: "Message saved successfully",
+      //           data: message,
+      //         });
+      //       }
+      //     }
+      //   } catch (err) {
+      //     callback({
+      //       success: false,
+      //       message: "Error in saving message",
+      //     });
+      //     console.log(err);
+      //   }
+      // });
     });
   }
 };
 
 // Send message real time via socket
-async function sendMsg(senderId, recieverId, text) {
-  io.to(recieverId).emit("sendMessage", {
-    senderId,
-    text,
-  });
+async function sendMsg(receiverId, message) {
+  const id = +receiverId;
+  io.to(id).emit("sendMessage", message);
 }
 
 const socket = {

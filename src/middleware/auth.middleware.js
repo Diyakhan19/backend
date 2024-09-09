@@ -51,11 +51,12 @@ export const socketAuth = (socket, next) => {
       if (error) {
         return next(new Error("Error in socket connection"));
       } else {
-        socket.userId = decoded.user.userId;
+        socket.userId = decoded.userId;
         next();
       }
     });
   } catch (error) {
+    console.log(error);
     console.log("Something went wrong with decoding token in socket");
     return next(new Error("Error in socket connection"));
   }

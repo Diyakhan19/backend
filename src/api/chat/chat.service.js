@@ -5,8 +5,8 @@ const createChat = (initiatorId, data) => {
   const { receiverId, postId, hotelId } = data;
 
   const participants = [
-    { participantId: initiatorId },
-    { participantId: receiverId },
+    { participantId: +initiatorId },
+    { participantId: +receiverId },
   ];
 
   return prisma.chat.create({
@@ -19,6 +19,17 @@ const createChat = (initiatorId, data) => {
           data: participants,
         },
       },
+    },
+  });
+};
+
+// Get chat
+const getChat = (userId, postId, hotelId) => {
+  return prisma.chat.findFirst({
+    where: {
+      initiatorId: +userId,
+      postId: +postId,
+      hotelId: +hotelId,
     },
   });
 };
@@ -58,6 +69,13 @@ const getChats = (userId, offset, limit) => {
           createdAt: "desc",
         },
       },
+      post: {
+        select: {
+          postId: true,
+          title: true,
+          images: true,
+        },
+      },
       _count: {
         select: {
           messages: {
@@ -74,7 +92,7 @@ const getChats = (userId, offset, limit) => {
 };
 
 // Get chat
-const getChat = (chatId, userId) => {
+const getChatById = (chatId, userId) => {
   return prisma.chat.findUnique({
     where: {
       chatId: +chatId,
@@ -109,13 +127,9 @@ const getChat = (chatId, userId) => {
 };
 
 // Save a new message
-const saveMessage = (chatId, userId, text) => {
+const saveMessage = (data) => {
   return prisma.message.create({
-    data: {
-      senderId: +userId,
-      chatId: +chatId,
-      text,
-    },
+    data: data,
   });
 };
 
@@ -135,7 +149,7 @@ const getMessages = (chatId) => {
       chatId: +chatId,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: "asc",
     },
   });
 };
@@ -167,8 +181,9 @@ const seenAllMessages = (chatId) => {
 
 const service = {
   createChat,
-  getChats,
   getChat,
+  getChats,
+  getChatById,
   saveMessage,
   getMessagesCount,
   getMessages,

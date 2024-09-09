@@ -7,6 +7,7 @@ import {
   getMessages,
   messageSeen,
   seenAllMessages,
+  saveMessage,
 } from "./chat.controller.js";
 import { validate } from "../../utils/schema.validation.js";
 import {
@@ -15,17 +16,31 @@ import {
   msgSeenSchema,
   chatIdSchema,
   getMsgsSchema,
+  saveMsgSchema,
 } from "./chat.schema.js";
+import auth from "../../middleware/auth.middleware.js";
+import upload from "../../middleware/upload.middleware.js";
 
 // @route    POST /api/chat/
 // @desc     Create a chat
 // @access   private
-router.post("/", validate(createChatSchema), createChat);
+router.post("/", auth, validate(createChatSchema), createChat);
+
+// @route    POST /api/chat/message
+// @desc     Save a message
+// @access   private
+router.post(
+  "/message",
+  auth,
+  upload.attachmentImgs.array("files"),
+  validate(saveMsgSchema),
+  saveMessage
+);
 
 // @route    GET /api/chat/?userId
 // @desc     Get chats of a user
 // @access   private
-router.get("/", getChats);
+router.get("/", auth, getChats);
 
 // @route    GET /api/chat/message
 // @desc     Get messages of a chat with pagination
