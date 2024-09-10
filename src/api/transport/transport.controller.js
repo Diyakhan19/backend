@@ -54,7 +54,7 @@ export const createTransport = async (req, res, next) => {
 // Get all transports
 export const getTransports = async (req, res, next) => {
   try {
-    const { search, type, city, trasportIds } = req.body;
+    const { search, type, city, trasportIds, limit, sortBy } = req.body;
 
     const searchSchema = search
       ? [
@@ -78,11 +78,23 @@ export const getTransports = async (req, res, next) => {
         ]
       : undefined;
 
+    let orderBy = {
+      createdAt: "desc",
+    };
+
+    if (sortBy === "rating") {
+      orderBy = {
+        rating: "desc",
+      };
+    }
+
     const transports = await service.getTransports(
       searchSchema,
       type,
       city,
-      trasportIds
+      trasportIds,
+      orderBy,
+      limit
     );
 
     return sendResponse(res, "Get transports successful", transports);

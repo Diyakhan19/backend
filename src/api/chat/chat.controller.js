@@ -8,9 +8,7 @@ export const createChat = async (req, res, next) => {
     const { receiverId, postId, hotelId } = req.body;
     const initiatorId = req.user.userId;
 
-    const chatExists = await service.getChat(initiatorId, postId);
-
-    console.log("+++++++>", chatExists);
+    const chatExists = await service.getChat(initiatorId, postId, hotelId);
 
     if (chatExists) {
       return sendResponse(res, "Chat already exists", chatExists);
@@ -18,9 +16,15 @@ export const createChat = async (req, res, next) => {
 
     const data = {
       receiverId,
-      postId,
-      hotelId,
     };
+
+    if (hotelId) {
+      data.hotelId = +hotelId;
+    }
+
+    if (postId) {
+      data.postId = +postId;
+    }
 
     const chat = await service.createChat(initiatorId, data);
 
@@ -131,6 +135,20 @@ export const seenAllMessages = async (req, res, next) => {
     const seenAll = await service.seenAllMessages(chatId);
 
     return sendResponse(res, "Seen all messages successfull", seenAll);
+  } catch (error) {
+    console.log(error);
+    next({ status: 500, msg: error.message });
+  }
+};
+
+// ==== Delete a chat ==== //
+export const deleteChat = async (req, res, next) => {
+  try {
+    const { chatId } = req.body;
+
+    const chat = await service.deleteChat(chatId);
+
+    return sendResponse(res, "Chat deleted successfull", chat);
   } catch (error) {
     console.log(error);
     next({ status: 500, msg: error.message });

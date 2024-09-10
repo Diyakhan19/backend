@@ -28,14 +28,20 @@ const getChat = (userId, postId, hotelId) => {
   return prisma.chat.findFirst({
     where: {
       initiatorId: +userId,
-      postId: +postId,
-      hotelId: +hotelId,
+      OR: [
+        {
+          postId: +postId,
+        },
+        {
+          hotelId: +hotelId,
+        },
+      ],
     },
   });
 };
 
 // Get chats of a user
-const getChats = (userId, offset, limit) => {
+const getChats = (userId) => {
   return prisma.chat.findMany({
     where: {
       participants: {
@@ -63,12 +69,6 @@ const getChats = (userId, offset, limit) => {
           },
         },
       },
-      messages: {
-        take: 1,
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
       post: {
         select: {
           postId: true,
@@ -76,18 +76,14 @@ const getChats = (userId, offset, limit) => {
           images: true,
         },
       },
-      _count: {
+      hotel: {
         select: {
-          messages: {
-            where: {
-              isSeen: false,
-            },
-          },
+          hotelId: true,
+          name: true,
+          images: true,
         },
       },
     },
-    skip: offset,
-    take: limit,
   });
 };
 
@@ -179,6 +175,15 @@ const seenAllMessages = (chatId) => {
   });
 };
 
+// Delete a chat
+const deleteChat = (chatId) => {
+  return prisma.chat.delete({
+    where: {
+      chatId: +chatId,
+    },
+  });
+};
+
 const service = {
   createChat,
   getChat,
@@ -189,6 +194,7 @@ const service = {
   getMessages,
   messageSeen,
   seenAllMessages,
+  deleteChat,
 };
 
 export default service;

@@ -83,11 +83,13 @@ model Transport {
   city        String
   status      String             @default("available")
   images      Json?
+  rating      Int                @default(0)
   user        User               @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId      Int
   createdAt   DateTime           @default(now())
   updateAt    DateTime           @default(now()) @updatedAt
   bookings    TransportBooking[]
+  reviews Review[]
 }
 
 model Room {
@@ -190,6 +192,8 @@ model Review {
   destinationId Int?
   hotel         Hotel?       @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
   hotelId       Int?
+  trasport         Transport?       @relation(fields: [transportId], references: [transportId], onDelete: Cascade)
+  transportId       Int?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @default(now()) @updatedAt
 }
@@ -202,7 +206,7 @@ model Chat {
   updatedAt    DateTime          @default(now()) @updatedAt
   post         Post?             @relation(fields: [postId], references: [postId], onDelete: Cascade)
   postId       Int?
-  hotel        Hotel?             @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
+  hotel        Hotel?            @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
   hotelId      Int?
   participants ChatParticipant[]
   messages     Message[]

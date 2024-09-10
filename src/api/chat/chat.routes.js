@@ -8,6 +8,7 @@ import {
   messageSeen,
   seenAllMessages,
   saveMessage,
+  deleteChat,
 } from "./chat.controller.js";
 import { validate } from "../../utils/schema.validation.js";
 import {
@@ -33,7 +34,6 @@ router.post(
   "/message",
   auth,
   upload.attachmentImgs.array("files"),
-  validate(saveMsgSchema),
   saveMessage
 );
 
@@ -61,5 +61,10 @@ router.patch("/message/seen", validate(msgSeenSchema), messageSeen);
 // @desc     Seen all messages of a chat
 // @access   private
 router.patch("/message/seen/all", validate(chatIdSchema), seenAllMessages);
+
+// @route    PATCH /api/chat/message/seen
+// @desc     Save a message
+// @access   private
+router.delete("/delete", validate(chatIdSchema), deleteChat);
 
 export default router;

@@ -57,7 +57,7 @@ const init = (server) => {
 // Send message real time via socket
 async function sendMsg(receiverId, message) {
   const id = +receiverId;
-  io.to(id).emit("sendMessage", message);
+  io.to(id).emit("receiveMessage", message);
 }
 
 const socket = {

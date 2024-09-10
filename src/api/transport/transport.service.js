@@ -22,7 +22,14 @@ const updateTransport = (transportId, data) => {
 };
 
 // Get all tranposts
-const getTransports = (searchSchema, type, city, trasportIds) => {
+const getTransports = (
+  searchSchema,
+  type,
+  city,
+  trasportIds,
+  orderBy,
+  limit
+) => {
   return prisma.transport.findMany({
     where: {
       transportId: trasportIds
@@ -37,9 +44,8 @@ const getTransports = (searchSchema, type, city, trasportIds) => {
       city: city !== "" ? city : undefined,
       OR: searchSchema,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: orderBy,
+    take: limit ? +limit : undefined,
   });
 };
 
@@ -56,6 +62,22 @@ const getTransport = (transportId) => {
           name: true,
           image: true,
           email: true,
+        },
+      },
+      bookings: {
+        select: {
+          userId: true,
+        },
+      },
+      reviews: {
+        include: {
+          user: {
+            select: {
+              userId: true,
+              name: true,
+              image: true,
+            },
+          },
         },
       },
     },
@@ -78,6 +100,18 @@ const createBooking = (data) => {
   });
 };
 
+// Get trasnport rating
+const getTransportRating = (transportId) => {
+  return prisma.review.aggregate({
+    where: {
+      transportId: +transportId,
+    },
+    _avg: {
+      stars: true,
+    },
+  });
+};
+
 const service = {
   createTransport,
   updateTransport,
@@ -85,6 +119,7 @@ const service = {
   getTransport,
   deleteTransport,
   createBooking,
+  getTransportRating,
 };
 
 export default service;

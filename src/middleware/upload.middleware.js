@@ -130,14 +130,6 @@ const attachmentImgs = multer({
       cb(null, fileName);
     },
   }),
-  fileFilter: (req, file, cb) => {
-    const allowedFileType = ["jpg", "jpeg", "png"];
-    if (allowedFileType.includes(file.mimetype.split("/")[1])) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-    }
-  },
 });
 
 const upload = {

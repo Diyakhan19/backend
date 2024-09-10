@@ -10,7 +10,7 @@ export const createChatSchema = [
 // Save message Id
 export const saveMsgSchema = [
   ...chatIdSchema,
-  body("text", "Text is required").isString().isLength({ min: 1 }),
+  body("text", "Text is required").optional().isString().isLength({ min: 1 }),
 ];
 
 // Chat schema
