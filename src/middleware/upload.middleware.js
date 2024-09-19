@@ -132,6 +132,18 @@ const attachmentImgs = multer({
   }),
 });
 
+const campingImgs = multer({
+  storage: diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "uploads/camping");
+    },
+    filename: (req, file, cb) => {
+      let fileName = new Date().getMilliseconds() + "-" + file.originalname;
+      cb(null, fileName);
+    },
+  }),
+});
+
 const upload = {
   profileImgs,
   destinationImgs,
@@ -140,6 +152,7 @@ const upload = {
   roomImgs,
   transportImgs,
   attachmentImgs,
+  campingImgs,
 };
 
 export default upload;

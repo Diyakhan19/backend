@@ -83,6 +83,17 @@ const getUserById = (userId) => {
           },
         },
       },
+      camping: {
+        include: {
+          destination: {
+            select: {
+              destinationId: true,
+              title: true,
+              images: true,
+            },
+          },
+        },
+      },
     },
   });
 };

@@ -17,6 +17,12 @@ const getSingleDestination = (destinationId) => {
           },
         },
       },
+      campings: {
+        take: 3,
+        orderBy: {
+          price: "asc",
+        },
+      },
     },
   });
 };

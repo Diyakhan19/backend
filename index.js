@@ -49,6 +49,7 @@ import hotelRouter from "./src/api/hotel/hotel.router.js";
 import destRouter from "./src/api/destination/dest.router.js";
 import transportRouter from "./src/api/transport/transport.router.js";
 import chatRouter from "./src/api/chat/chat.routes.js";
+import campingRouter from "./src/api/camping/camping.router.js";
 import { addAdmin } from "./src/utils/admin.js";
 
 app.use("/api/auth", authRouter);
@@ -59,6 +60,7 @@ app.use("/api/hotel", hotelRouter);
 app.use("/api/destination", destRouter);
 app.use("/api/transport", transportRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/camping", campingRouter);
 
 // Error handler
 app.use((err, req, res, next) => {

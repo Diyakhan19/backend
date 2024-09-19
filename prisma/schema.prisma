@@ -39,6 +39,8 @@ model User {
   reviews      Review[]
   bookings     Booking[]
   rented       TransportBooking[]
+  camping      Camping[]
+
 }
 
 model Favorite {
@@ -89,7 +91,7 @@ model Transport {
   createdAt   DateTime           @default(now())
   updateAt    DateTime           @default(now()) @updatedAt
   bookings    TransportBooking[]
-  reviews Review[]
+  reviews     Review[]
 }
 
 model Room {
@@ -178,6 +180,7 @@ model Destination {
   userId        Int
   favorites     Favorite[]
   reviews       Review[]
+  campings      Camping[]
   createdAt     DateTime   @default(now())
   updateAt      DateTime   @default(now()) @updatedAt
 }
@@ -192,8 +195,8 @@ model Review {
   destinationId Int?
   hotel         Hotel?       @relation(fields: [hotelId], references: [hotelId], onDelete: Cascade)
   hotelId       Int?
-  trasport         Transport?       @relation(fields: [transportId], references: [transportId], onDelete: Cascade)
-  transportId       Int?
+  trasport      Transport?   @relation(fields: [transportId], references: [transportId], onDelete: Cascade)
+  transportId   Int?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @default(now()) @updatedAt
 }
@@ -233,4 +236,24 @@ model Message {
   senderId    Int
   chat        Chat     @relation(fields: [chatId], references: [chatId], onDelete: Cascade)
   chatId      Int
+}
+
+model Camping {
+  campingId   Int      @id @default(autoincrement())
+  name        String
+  description String
+  duration    String
+  price       Float
+  type        String
+  city        String
+  phone       String
+  facilities  Json
+  images      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  destination   Destination @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
+  destinationId Int
+  user          User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId        Int
 }
