@@ -40,7 +40,6 @@ model User {
   bookings     Booking[]
   rented       TransportBooking[]
   camping      Camping[]
-
 }
 
 model Favorite {
@@ -254,6 +253,6 @@ model Camping {
 
   destination   Destination @relation(fields: [destinationId], references: [destinationId], onDelete: Cascade)
   destinationId Int
-  user          User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId        Int
 }

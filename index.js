@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 // ==== CORS Policy ==== //
-var whitelist = ["http://localhost:3000"];
+var whitelist = ["http://localhost:3000", "http://localhost:3001"];
 
 export var corsOptions = {
   origin: function (origin, callback) {
@@ -86,3 +86,5 @@ socket.init(server);
 
 // Add admin
 addAdmin();
+
+export default server;
