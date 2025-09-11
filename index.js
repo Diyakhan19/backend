@@ -62,7 +62,7 @@ app.use("/api/transport", transportRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/camping", campingRouter);
 
-// Error handler
+// Error handler middleware
 app.use((err, req, res, next) => {
   console.log("++++++++++> ", err);
   if (err.msg) {
@@ -87,4 +87,4 @@ socket.init(server);
 // Add admin
 addAdmin();
 
-export default server;
+export default app;
