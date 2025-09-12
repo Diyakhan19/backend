@@ -19,7 +19,11 @@ app.use((req, res, next) => {
 });
 
 // ==== CORS Policy ==== //
-var whitelist = ["http://localhost:3000", "http://localhost:3001"];
+var whitelist = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://explore-k.vercel.app",
+];
 
 export var corsOptions = {
   origin: function (origin, callback) {
